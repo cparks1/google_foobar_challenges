@@ -51,3 +51,23 @@ class TestAnswers(TestCase):
             given_ans = level_2.bunny_prisoner_answer(x,y)
             self.assertEqual(expected_ans, given_ans, "(%d,%d) - Got: %s, Expected: %s" %
                              (x, y, given_ans, expected_ans))
+
+    def test_level2_elevator_maintenance(self):
+        """
+        Level 2 Test Cases
+        ==========
+        Inputs:
+            (string list) l = ["1.1.2", "1.0", "1.3.3", "1.0.12", "1.0.2"]
+        Output:
+            (string list) ["1.0", "1.0.2", "1.0.12", "1.1.2", "1.3.3"]
+
+        Inputs:
+            (string list) l = ["1.11", "2.0.0", "1.2", "2", "0.1", "1.2.1", "1.1.1", "2.0"]
+        Output:
+            (string list) ["0.1", "1.1.1", "1.2", "1.2.1", "1.11", "2", "2.0", "2.0.0"]
+        """
+        test_cases = [(["1.1.2", "1.0", "1.3.3", "1.0.12", "1.0.2"], ["1.0", "1.0.2", "1.0.12", "1.1.2", "1.3.3"]),
+                      (["1.11", "2.0.0", "1.2", "2", "0.1", "1.2.1", "1.1.1", "2.0"], ["0.1", "1.1.1", "1.2", "1.2.1", "1.11", "2", "2.0", "2.0.0"])]
+
+        for input_list, expected_output in test_cases:
+            self.assertListEqual(expected_output, level_2.elevator_maintenance(input_list))
