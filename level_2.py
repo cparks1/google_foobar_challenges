@@ -72,37 +72,28 @@ The number of elements in the list l will be at least 1 and will not exceed 100.
 """
 
 
-def bucketize_by_split_index(l, index, sep='.'):
-    buckets = defaultdict(list)
-    for version in l:
-        split_ver = version.split(sep)
-        num = int(split_ver[index]) if len(split_ver) > index else None
-        buckets[num].append(version)
+class Version:
+    def __init__(self, version_string):
+        version_string_split = version_string.split('.')
+        self.major = int(version_string_split[0])
+        self.minor = int(version_string_split[1]) if len(version_string_split) > 1 else -1
+        self.rev = int(version_string_split[2]) if len(version_string_split) > 2 else -1
 
-    return buckets.values()
+    def __str__(self):
+        string = "%d" % self.major
+        string += (".%d" % self.minor) if self.minor != -1 else ""
+        string += (".%d" % self.rev) if self.rev != -1 else ""
+        return string
 
-def nested_final_bucket_to_list(final_bucket):
-    ret_list = list()
-    for minor_bucket in final_bucket:
-        for rev_bucket in minor_bucket:
-            ret_list.append(rev_bucket[0])
+def answer(l):
+    # I planned on implementing a Radix sort, but I figured reinventing the wheel may be pointless
+    # if the time complexity of Python's given sorting function was acceptable enough.
+    # Timsort (https://en.wikipedia.org/wiki/Timsort) seemed to have an acceptable time complexity,
+    # (Python's given sorting function is a Timsort implementation.)
+    # as N will never be greater than 100, and the tradeoff between the time complexity of radix sort and timsort
+    # was negligible at that small of a scale (worst case O(n log n) timsort vs worst case O(w*n) radix sort)
 
-    return ret_list
-
-def elevator_maintenance(l):
-    major_buckets = bucketize_by_split_index(l, 0)
-    print(major_buckets)
-
-    minor_buckets = []
-    for bucket in major_buckets:
-        minor_buckets.append(bucketize_by_split_index(bucket, 1))
-    print(minor_buckets)
-
-    rev_buckets = []
-    for something in minor_buckets:
-        for bucket in something:
-            rev_buckets.append(bucketize_by_split_index(bucket, 2))
-    print(rev_buckets)
-
-    return nested_final_bucket_to_list(rev_buckets)
+    parsed_versions = [Version(x) for x in l]
+    sorted_versions = [str(x) for x in sorted(parsed_versions, key=lambda x: (x.major, x.minor, x.rev))]
+    return sorted_versions
 
