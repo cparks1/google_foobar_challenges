@@ -1,6 +1,7 @@
 from unittest import TestCase
 import level_1
 import level_2
+import level_3
 
 
 class TestAnswers(TestCase):
@@ -71,3 +72,25 @@ class TestAnswers(TestCase):
 
         for input_list, expected_output in test_cases:
             self.assertListEqual(expected_output, level_2.elevator_maintenance(input_list))
+
+    def test_level3_lucky_triples(self):
+        """
+        Test cases
+        ==========
+        Inputs:
+            (int list) l = [1, 1, 1]
+        Output:
+            (int) 1
+
+        Inputs:
+            (int list) l = [1, 2, 3, 4, 5, 6]
+        Output:
+            (int) 3
+        """
+        test_cases = [([1, 1, 1], 1),
+                      ([1, 2, 3, 4, 5, 6], 3),
+                      ([x for x in range(1, 10)], 7)]
+
+        for input_list, expected_output in test_cases:
+            #level_3.lucky_triples(input_list)
+            self.assertEqual(expected_output, level_3.lucky_triples(input_list))

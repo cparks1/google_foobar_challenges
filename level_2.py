@@ -85,7 +85,8 @@ class Version:
         string += (".%d" % self.rev) if self.rev != -1 else ""
         return string
 
-def answer(l):
+
+def elevator_maintenance(l):
     # I planned on implementing a Radix sort, but I figured reinventing the wheel may be pointless
     # if the time complexity of Python's given sorting function was acceptable enough.
     # Timsort (https://en.wikipedia.org/wiki/Timsort) seemed to have an acceptable time complexity,
