@@ -29,24 +29,34 @@ def lucky_triples(l):
     # Factoring is hard when you don't have a quantum computer to run Shor's algorithm.
     triples_count = 0
 
-    divisibles_dict = defaultdict(list)
-    special_cases = defaultdict(list)
+    multiples_dict = defaultdict(set)  # Key: number, Value: list of numbers in l that can be divided evenly by number
+    num_occurences = defaultdict(int)  # Key: number, Value: # times the number occurred in l.
     for i, li in enumerate(l):  # O(n^2) method of getting all divisors into a list.
+        num_occurences[li] += 1
         for j, lj in enumerate(l[i+1:]):
-            if li == lj:  # Special case.
-                special_cases[li].append(lj)
-            elif lj % li == 0:
-                divisibles_dict[li].append(lj)
+            if li != lj and lj % li == 0:
+                multiples_dict[li].add(lj)
 
-    for number, num_list in special_cases.iteritems():
-        triples_count += len(num_list) / 3  # +1 if there are 3 elements.
+    for number, occurrences in num_occurences.iteritems():
+        if occurrences >= 3:  # We can make a lucky triple from JUST this number, as there are 3 or more.
+            triples_count += 1
+            print((number,)*3)
 
-        if len(num_list) >= 2:
-            triples_count += len(divisibles_dict[number])  # If we've got (x,x), then we can make a lucky pair with all numbers divisible by x.
+        if occurrences >= 2:  # We have (x, x) so we can make a lucky triple with all numbers that are divisible by x.
+            if number in multiples_dict:  # If there are numbers divisible by x (var "number" is x in this case)
+                triples_count += len(multiples_dict[number])
+                for n in multiples_dict[number]:
+                    print((number,)*2+(n,))
 
-    for number, div_list in divisibles_dict.iteritems():
-        for divisible in div_list:
-            if divisible in divisibles_dict:
-                triples_count += len(divisibles_dict[divisible])
+    for number, mult_set in multiples_dict.iteritems():  # For each number with multiples in the list (number, ?, ?)
+        for multiple in mult_set:  # For each multiple of the number (number, multiple, ?)
+            if num_occurences[multiple] >= 2:  # We can do a lucky triple of x,y,y where x=number and y=multiple.
+                triples_count += 1
+                print((number,)+(multiple,)*2)
+
+            if multiple in multiples_dict:  # For each multiple of the multiple of the number (number, multiple, multiples[multiple])
+                triples_count += len(multiples_dict[multiple])
+                for n in multiples_dict[multiple]:
+                    print((number, multiple, n))
 
     return triples_count

@@ -87,10 +87,18 @@ class TestAnswers(TestCase):
         Output:
             (int) 3
         """
-        test_cases = [([1, 1, 1], 1),
-                      ([1, 2, 3, 4, 5, 6], 3),
-                      ([x for x in range(1, 10)], 7)]
+        test_cases = [([1, 1, 1], 1),  # Test 1
+                      ([1, 2, 3, 4, 5, 6], 3),  # Test 2
+                      ([x for x in range(1, 10)], 7),  # Test 3
+                      ([1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47], 0),  # Test 4
+                      ([1, 1, 2, 2, 3, 3, 4, 4], 9),  # Test 5
+                      ([1,1,1,2,2,2,3,3,3,4,4,4],13),  # Test 6
+                      ([1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6], 3)]  # Test 7
 
+        test_count = 1
         for input_list, expected_output in test_cases:
-            #level_3.lucky_triples(input_list)
-            self.assertEqual(expected_output, level_3.lucky_triples(input_list))
+            print("----- TEST %d -----" % test_count)
+            actual_output = level_3.lucky_triples(input_list)
+            self.assertEqual(expected_output, actual_output)
+            print('%s: %d' % (input_list, actual_output))
+            test_count += 1
