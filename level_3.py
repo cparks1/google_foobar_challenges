@@ -1,4 +1,5 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
+from itertools import combinations
 
 """
 Find the Access Codes
@@ -25,7 +26,7 @@ For example, [1, 2, 3, 4, 5, 6] has the triples: [1, 2, 4], [1, 2, 6], [1, 3, 6]
 """
 
 
-def lucky_triples(l):
+def lucky_triples_not_working(l):
     # Factoring is hard when you don't have a quantum computer to run Shor's algorithm.
     triples_count = 0
 
@@ -60,3 +61,54 @@ def lucky_triples(l):
                     print((number, multiple, n))
 
     return triples_count
+
+
+def lucky_triples_not_working_2(l):
+    # I love challenges like these because it helps me find new features of the Python API I never knew about,
+    # such as the module "itertools" and the function "combination" from it.
+    # The "Counter" data type came in especially handy. I used to use "defaultdict"s in the past to do the same thing.
+
+    occurrences = Counter(l)  # Keeps track of the number of occurrences of each number in the list.
+
+    even_divisors = Counter()      # Keeps track of the number of even divisors of each number.
+    mults = Counter()     # Keeps count of the numbers that a number can go into.
+
+    for li, lk in combinations(sorted(occurrences), 2):  # Go through all possible pairs of the list
+        if lk % li == 0:  # And if they are a good candidate for li, lj OR lj, lk
+            even_divisors[lk] += 1  # Then count the divisor for the larger number
+            mults[li] += 1  # And count the multiple for the smaller number.
+
+    ret_val = 0
+    for li, count in occurrences.items():  # Go through each number and its occurrences.
+        ret_val += even_divisors[li] * mults[li]  # Count all the pairs of the form (divisor, li, multiple)
+        if count >= 2:  # If there were at least two of this number, then it could make a triple pair with
+                    # all of its even divisors and all the numbers it can multiply into.
+                    # Ex: (2, 2, 4) OR (1, 2, 2)
+            ret_val += even_divisors[li] + mults[li]
+            if count >= 3:  # If there were at least three of this number,
+                            # then it could make a triple pair on its own (li, li, li)
+                ret_val += 1
+
+    return ret_val
+
+
+def lucky_triples(l):
+    num_triples = 0  # Total number of lucky triples found.
+    num_div_pairs = Counter()  # Keeps track of the number of pairs found for a specific number.
+                               # Does this by index of the number in the list "l".
+                               # Ex: l[2] = 3, then num_div_pairs[2] is the number of pairs with that 3 in it.
+
+    # Count lucky pairs in the list, except the first and last items
+    for i in range(1, len(l)-1):
+        for j in range(0, i):
+            if l[i] % l[j] == 0:  # If the numbers are a lucky pair
+                num_div_pairs[i] += 1  # then count them.
+
+    # Count lucky triples for each item in the list
+    for i in range(2, len(l)):
+        for j in range(1, i):
+            if l[i] % l[j] == 0:  # If the numbers are a lucky pair
+                num_triples += num_div_pairs[j]  # Then this pair can be used to make a lucky triple with all
+                                                 # of the other lucky pairs of j.
+
+    return num_triples
